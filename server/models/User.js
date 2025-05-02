@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   username: { type: String, required: true },
   city: { type: String, required: true },
+  profileImage: { type: String, default: '' }, // optional field for image URL
+  about: { type: String, default: '' },        
 });
 
 export default mongoose.model('User', userSchema);

@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate(); // 👈 create navigate instance
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setErrorMsg('');
+    setErrorMsg(''); // Reset the error message
+
     try {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -16,17 +19,25 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // Make sure cookies are included with the request
       });
+
       const data = await res.json();
       console.log(data);
-    } catch {
-      console.log('error');
+      console.log(res);
+      if (res.ok) {
+        console.log('Login successful', data);
+        navigate('/home'); // ✅ redirect on successful login
+      } else {
+        setErrorMsg(data.msg || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
       setErrorMsg('Login failed. Please try again.');
     }
   };
 
   return (
-    
     <div className="login-page">
       <form onSubmit={handleLogin} className="login-form">
         <h2>Login</h2>

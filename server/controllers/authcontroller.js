@@ -76,35 +76,46 @@ export const sendOtp = async (req, res) => {
       return res.status(500).json({ msg: 'Server error during registration' });
     }
   };
-  export const login = async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
-      const user = await User.findOne({ email });
-      if (!user) return res.status(400).json({ msg: 'User not found' });
-  
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-  
-      const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: '1d',
-      });
-  
-      return res.json({
-        msg: 'Login successful',
-        token,
-        user: {
-          id: user._id,
-          email: user.email,
-          username: user.username,
-          city: user.city,
-        },
-      });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ msg: 'Server error during login' });
-    }
-  };
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ msg: 'User not found' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
+   
+    // ✅ Set cookie
+    res.cookie('token', token, {
+      httpOnly: true, // JS can't access cookie (more secure)
+      secure: process.env.NODE_ENV === 'production', // send only over HTTPS in prod
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'None', // handle cross-origin during development
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+    
+
+    // Don't need to send token in JSON body anymore
+    return res.json({
+      msg: 'Login successful',
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        city: user.city,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Server error during login' });
+  }
+};
+
   export const sendOtpForReset =  async (req,res) =>{
     const { email } = req.body;
     try {
@@ -157,6 +168,25 @@ export const sendOtp = async (req, res) => {
       return res.status(500).json({ msg: 'Error resetting password' });
     }
   };
-    
-
+  
+  export const updateProfile = async (req, res) => {
+    try {
+      const updates = {
+        username: req.body.username,
+        city: req.body.city,
+        profileImage: req.body.profileImage,
+        about: req.body.about,
+      };
+  
+      const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select('-password');
+      if (!user) return res.status(404).json({ msg: 'User not found' });
+  
+      res.json({ msg: 'Profile updated successfully', user });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ msg: 'Failed to update profile' });
+    }
+  };
+  
+  
       

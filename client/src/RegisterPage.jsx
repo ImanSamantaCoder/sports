@@ -82,7 +82,7 @@ const RegisterPage = () => {
   const isFormDisabled = otpSent && timer > 0;
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 p-5">
       <div className="border rounded p-4 shadow-sm bg-light mx-auto" style={{ maxWidth: '700px' }}>
         <h2 className="mb-4 text-center fs-3">Register</h2>
 
