@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import User from './models/User.js';
 dotenv.config();
+import uploadRoute from './routes/upload.js';
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/upload', uploadRoute);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {

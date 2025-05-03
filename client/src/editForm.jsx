@@ -9,14 +9,17 @@ const EditForm = () => {
     profileImage: '',
     about: '',
   });
+
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/auth/user/me', { method:"GET",withCredentials: true });
-        console.log('User Data:', res.data); 
+        const res = await axios.get('http://localhost:5000/api/auth/user/me', {
+          withCredentials: true,
+        });
         setFormData({
           email: res.data.email || '',
           username: res.data.username || '',
@@ -37,13 +40,35 @@ const EditForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const form = new FormData();
+    form.append('image', file);
+
+    try {
+      setUploading(true);
+      const res = await axios.post('http://localhost:5000/api/upload', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setFormData((prev) => ({ ...prev, profileImage: res.data.url }));
+      setMsg('Image uploaded successfully!');
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      setMsg('Image upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put('http://localhost:5000/api/auth/update', formData, {
+      await axios.put('http://localhost:5000/api/auth/update', formData, {
         withCredentials: true,
       });
       setMsg('Profile updated successfully!');
@@ -59,8 +84,25 @@ const EditForm = () => {
     <div className="container mt-5">
       <h2>Edit Profile</h2>
       {msg && <div className="alert alert-info">{msg}</div>}
-      <form onSubmit={handleSubmit}>
 
+      {/* Show the image preview at the top, centered and rounded */}
+      {formData.profileImage && (
+        <div className="mb-3 d-flex justify-content-center">
+          <img
+            src={formData.profileImage}
+            alt="Profile Preview"
+            className="img-thumbnail"
+            style={{
+              width: '200px',  // Increased width
+              height: '200px', // Increased height
+              objectFit: 'contain', // Ensures image isn't cropped
+              borderRadius: '50%',  // Makes the image circular
+            }}
+          />
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Email address (readonly)</label>
           <input
@@ -99,27 +141,16 @@ const EditForm = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="profileImage" className="form-label">Profile Image URL</label>
+          <label htmlFor="imageUpload" className="form-label">Upload Profile Image</label>
           <input
-            type="url"
+            type="file"
+            accept="image/*"
             className="form-control"
-            id="profileImage"
-            name="profileImage"
-            value={formData.profileImage}
-            onChange={handleChange}
+            id="imageUpload"
+            onChange={handleImageUpload}
           />
+          {uploading && <p>Uploading...</p>}
         </div>
-
-        {formData.profileImage && (
-          <div className="mb-3">
-            <img
-              src={formData.profileImage}
-              alt="Preview"
-              className="img-thumbnail"
-              style={{ width: '150px' }}
-            />
-          </div>
-        )}
 
         <div className="mb-3">
           <label htmlFor="about" className="form-label">About</label>
