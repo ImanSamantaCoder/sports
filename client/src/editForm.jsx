@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import cityOptions from "./cityOptions"; // adjust the path as needed
 
 const EditForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    city: '',
-    profileImage: '',
-    about: '',
+    email: "",
+    username: "",
+    city: "",
+    profileImage: "",
+    about: "",
   });
 
   const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState('');
+  const [msg, setMsg] = useState("");
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/auth/user/me', {
+        const res = await axios.get("http://localhost:5000/api/auth/user/me", {
           withCredentials: true,
         });
         setFormData({
-          email: res.data.email || '',
-          username: res.data.username || '',
-          city: res.data.city || '',
-          profileImage: res.data.profileImage || '',
-          about: res.data.about || '',
+          email: res.data.email || "",
+          username: res.data.username || "",
+          city: res.data.city || "",
+          profileImage: res.data.profileImage || "",
+          about: res.data.about || "",
         });
         setLoading(false);
       } catch (err) {
-        console.error('Failed to fetch user:', err);
-        setMsg('Error loading user info');
+        console.error("Failed to fetch user:", err);
+        setMsg("Error loading user info");
         setLoading(false);
       }
     };
@@ -48,18 +49,18 @@ const EditForm = () => {
     if (!file) return;
 
     const form = new FormData();
-    form.append('image', file);
+    form.append("image", file);
 
     try {
       setUploading(true);
-      const res = await axios.post('http://localhost:5000/api/upload', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const res = await axios.post("http://localhost:5000/api/upload", form, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       setFormData((prev) => ({ ...prev, profileImage: res.data.url }));
-      setMsg('Image uploaded successfully!');
+      setMsg("Image uploaded successfully!");
     } catch (err) {
-      console.error('Image upload failed:', err);
-      setMsg('Image upload failed');
+      console.error("Image upload failed:", err);
+      setMsg("Image upload failed");
     } finally {
       setUploading(false);
     }
@@ -68,13 +69,15 @@ const EditForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:5000/api/auth/update', formData, {
+      await axios.put("http://localhost:5000/api/auth/update", formData, {
         withCredentials: true,
       });
-      setMsg('Profile updated successfully!');
+      setMsg("Profile updated successfully!");
     } catch (err) {
-      console.error('Update failed:', err);
-      setMsg(`Failed to update profile: ${err.response?.data?.msg || err.message}`);
+      console.error("Update failed:", err);
+      setMsg(
+        `Failed to update profile: ${err.response?.data?.msg || err.message}`
+      );
     }
   };
 
@@ -93,10 +96,10 @@ const EditForm = () => {
             alt="Profile Preview"
             className="img-thumbnail"
             style={{
-              width: '200px',  // Increased width
-              height: '200px', // Increased height
-              objectFit: 'contain', // Ensures image isn't cropped
-              borderRadius: '50%',  // Makes the image circular
+              width: "200px", // Increased width
+              height: "200px", // Increased height
+              objectFit: "contain", // Ensures image isn't cropped
+              borderRadius: "50%", // Makes the image circular
             }}
           />
         </div>
@@ -104,7 +107,9 @@ const EditForm = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address (readonly)</label>
+          <label htmlFor="email" className="form-label">
+            Email address (readonly)
+          </label>
           <input
             type="email"
             className="form-control"
@@ -115,7 +120,9 @@ const EditForm = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">Username</label>
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
           <input
             type="text"
             className="form-control"
@@ -128,20 +135,30 @@ const EditForm = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="city" className="form-label">City</label>
-          <input
-            type="text"
-            className="form-control"
+          <label htmlFor="city" className="form-label">
+            City
+          </label>
+          <select
+            className="form-select"
             id="city"
             name="city"
             value={formData.city}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select your city</option>
+            {cityOptions.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-3">
-          <label htmlFor="imageUpload" className="form-label">Upload Profile Image</label>
+          <label htmlFor="imageUpload" className="form-label">
+            Upload Profile Image
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -153,7 +170,9 @@ const EditForm = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="about" className="form-label">About</label>
+          <label htmlFor="about" className="form-label">
+            About
+          </label>
           <textarea
             className="form-control"
             id="about"
@@ -164,7 +183,9 @@ const EditForm = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Update Profile</button>
+        <button type="submit" className="btn btn-primary">
+          Update Profile
+        </button>
       </form>
     </div>
   );

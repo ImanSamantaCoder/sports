@@ -9,7 +9,8 @@ import {
   resetPassword,
   updateProfile
 } from '../controllers/authcontroller.js';
-import { verifyToken } from '../middleware/auth.js';
+import verifyToken from '../middleware/auth.js'; // ✅ correct import for default
+
 import User from '../models/User.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -26,15 +27,16 @@ router.post('/reset-password', resetPassword);
 router.put('/update', verifyToken, updateProfile);
 router.get('/user/me', verifyToken, async (req, res) => {
   try {
-    
+    console.log('req.user:', req.user); // Add this
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ msg: 'User not found' });
-console.log(user);
+
     res.json(user);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 });
+
 
 export default router;

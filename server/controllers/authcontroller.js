@@ -90,14 +90,15 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
-   
+   console.log("inside login:",token);
     // ✅ Set cookie
     res.cookie('token', token, {
-      httpOnly: true, // JS can't access cookie (more secure)
-      secure: process.env.NODE_ENV === 'production', // send only over HTTPS in prod
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'None', // handle cross-origin during development
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // only true in prod
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      maxAge: 24 * 60 * 60 * 1000,
     });
+    
     
 
     // Don't need to send token in JSON body anymore

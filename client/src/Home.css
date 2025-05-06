@@ -1,0 +1,82 @@
+/* Navbar Styling */
+.navbar {
+  background-color: #343a40;  /* Dark background */
+  border-bottom: 2px solid #dee2e6; /* Light border */
+}
+
+.navbar-brand {
+  font-size: 2rem;  /* Increased font size */
+  font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.25rem;  /* Increased font size */
+  color: #ffffff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #007bff;  /* Highlight color on hover */
+  background-color: #444; /* Darken background on hover */
+  border-radius: 4px;
+}
+
+/* Custom class for Create Post Link */
+.create-post-link {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #ffffff;
+  padding: 8px 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.25rem;  /* Increased font size */
+}
+
+.create-post-link:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-title {
+  font-size: 1.75rem;  /* Increased font size */
+  color: #343a40;
+}
+
+.btn-close {
+  background-color: #6c757d;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.form-control, .form-select {
+  border-radius: 6px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2rem;  /* Increased font size */
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  border-radius: 6px;
+  font-size: 1.25rem;  /* Increased font size */
+}
+
+/* Backdrop */
+.modal-backdrop.fade.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}

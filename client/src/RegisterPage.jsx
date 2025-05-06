@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import cityOptions from "./cityOptions"; // adjust the path as needed
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
-    city: '',
-    otp: '',
+    username: "",
+    email: "",
+    password: "",
+    city: "",
+    otp: "",
   });
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [timer, setTimer] = useState(0); // countdown in seconds
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const RegisterPage = () => {
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
     const seconds = sec % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   const handleChange = (e) => {
@@ -41,41 +43,50 @@ const RegisterPage = () => {
 
   const sendOtp = async () => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/send-otp', {
-        email: form.email,
-        username: form.username,
-        password: form.password,
-        city: form.city,
-      });
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/send-otp",
+        {
+          email: form.email,
+          username: form.username,
+          password: form.password,
+          city: form.city,
+        }
+      );
       setOtpSent(true);
       setTimer(300); // 5 minutes = 300 seconds
       setMessage(data.msg);
     } catch (err) {
-      setMessage(err.response?.data?.msg || 'Failed to send OTP');
+      setMessage(err.response?.data?.msg || "Failed to send OTP");
     }
   };
 
   const verifyOtp = async () => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/verify-otp', {
-        email: form.email,
-        otp: form.otp,
-      });
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/verify-otp",
+        {
+          email: form.email,
+          otp: form.otp,
+        }
+      );
       setOtpVerified(true);
       setMessage(data.msg);
     } catch (err) {
-      setMessage(err.response?.data?.msg || 'Failed to verify OTP');
+      setMessage(err.response?.data?.msg || "Failed to verify OTP");
     }
   };
 
   const registerUser = async () => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', {
-        email: form.email,
-      });
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          email: form.email,
+        }
+      );
       setMessage(data.msg);
     } catch (err) {
-      setMessage(err.response?.data?.msg || 'Failed to register');
+      setMessage(err.response?.data?.msg || "Failed to register");
     }
   };
 
@@ -83,12 +94,19 @@ const RegisterPage = () => {
 
   return (
     <div className="container mt-5 p-5">
-      <div className="border rounded p-4 shadow-sm bg-light mx-auto" style={{ maxWidth: '700px' }}>
+      <div
+        className="border rounded p-4 shadow-sm bg-light mx-auto"
+        style={{ maxWidth: "700px" }}
+      >
         <h2 className="mb-4 text-center fs-3">Register</h2>
 
         {/* Username */}
         <div className="mb-3 d-flex flex-column flex-md-row align-items-md-center">
-          <label htmlFor="user" className="form-label fs-5 mb-2 mb-md-0 me-md-3" style={{ minWidth: '120px' }}>
+          <label
+            htmlFor="user"
+            className="form-label fs-5 mb-2 mb-md-0 me-md-3"
+            style={{ minWidth: "120px" }}
+          >
             Username
           </label>
           <input
@@ -105,7 +123,11 @@ const RegisterPage = () => {
 
         {/* Email */}
         <div className="mb-3 d-flex flex-column flex-md-row align-items-md-center">
-          <label htmlFor="email" className="form-label fs-5 mb-2 mb-md-0 me-md-3" style={{ minWidth: '120px' }}>
+          <label
+            htmlFor="email"
+            className="form-label fs-5 mb-2 mb-md-0 me-md-3"
+            style={{ minWidth: "120px" }}
+          >
             Email
           </label>
           <input
@@ -122,7 +144,11 @@ const RegisterPage = () => {
 
         {/* Password */}
         <div className="mb-3 d-flex flex-column flex-md-row align-items-md-center">
-          <label htmlFor="password" className="form-label fs-5 mb-2 mb-md-0 me-md-3" style={{ minWidth: '120px' }}>
+          <label
+            htmlFor="password"
+            className="form-label fs-5 mb-2 mb-md-0 me-md-3"
+            style={{ minWidth: "120px" }}
+          >
             Password
           </label>
           <input
@@ -138,24 +164,38 @@ const RegisterPage = () => {
         </div>
 
         {/* City */}
+        {/* City Dropdown */}
         <div className="mb-3 d-flex flex-column flex-md-row align-items-md-center">
-          <label htmlFor="city" className="form-label fs-5 mb-2 mb-md-0 me-md-3" style={{ minWidth: '120px' }}>
+          <label
+            htmlFor="city"
+            className="form-label fs-5 mb-2 mb-md-0 me-md-3"
+            style={{ minWidth: "120px" }}
+          >
             City
           </label>
-          <input
-            type="text"
+          <select
             name="city"
             id="city"
             className="form-control form-control-lg"
-            placeholder="City"
             value={form.city}
             onChange={handleChange}
             disabled={isFormDisabled}
-          />
+          >
+            <option value="">Select City</option>
+            {cityOptions.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Send OTP */}
-        <button className="btn btn-primary btn-lg w-100 mb-3" onClick={sendOtp} disabled={isFormDisabled}>
+        <button
+          className="btn btn-primary btn-lg w-100 mb-3"
+          onClick={sendOtp}
+          disabled={isFormDisabled}
+        >
           Send OTP
         </button>
 
@@ -180,20 +220,32 @@ const RegisterPage = () => {
                 onChange={handleChange}
               />
             </div>
-            <button className="btn btn-success btn-lg w-100 mb-3" onClick={verifyOtp} disabled={otpVerified}>
+            <button
+              className="btn btn-success btn-lg w-100 mb-3"
+              onClick={verifyOtp}
+              disabled={otpVerified}
+            >
               Verify OTP
             </button>
           </>
         )}
 
         {/* Register */}
-        <button className="btn btn-dark btn-lg w-100" onClick={registerUser} disabled={!otpVerified}>
+        <button
+          className="btn btn-dark btn-lg w-100"
+          onClick={registerUser}
+          disabled={!otpVerified}
+        >
           Register
         </button>
 
         {/* Message */}
         {message && (
-          <div className={`alert mt-4 fs-5 ${message.includes('success') ? 'alert-success' : 'alert-danger'}`}>
+          <div
+            className={`alert mt-4 fs-5 ${
+              message.includes("success") ? "alert-success" : "alert-danger"
+            }`}
+          >
             {message}
           </div>
         )}
