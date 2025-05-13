@@ -178,7 +178,7 @@ export const login = async (req, res) => {
         profileImage: req.body.profileImage,
         about: req.body.about,
       };
-  
+      
       const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select('-password');
       if (!user) return res.status(404).json({ msg: 'User not found' });
   

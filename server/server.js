@@ -6,14 +6,15 @@ import authRoutes from './routes/authRoutes.js';
 import User from './models/User.js';
 dotenv.config();
 import uploadRoute from './routes/upload.js';
-
+import post from "./routes/post.js"
+import friendRoutes from './routes/friendRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
  // ✅ correct import for default
 
 // Middleware
-import postRoutes from './routes/post.js';
+import postRoutes from "./routes/postRoutes.js";
 
 app.use(express.json());
 app.use(cors({
@@ -27,6 +28,9 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoute);
 app.use('/api/posts', postRoutes);
+app.use('/api/post', post);
+app.use('/api/friends', friendRoutes);
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

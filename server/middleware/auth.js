@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 
 const verifyToken = (req, res, next) => {
+  console.log('Token verification middleware triggered');
+
   const token = req.cookies.token;
   console.log('Received token from cookie:', token);
 
