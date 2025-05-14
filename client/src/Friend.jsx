@@ -6,6 +6,9 @@ const Friend = () => {
   return (
     <div className="friend-wrapper">
       <nav className="friend-navbar">
+         <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          home
+        </NavLink>
         <NavLink to="friends/suggestions" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
           Friend Suggestions
         </NavLink>

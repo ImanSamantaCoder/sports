@@ -23,7 +23,7 @@ const Post = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4" style={{ color: '#007bff' }}>Posts From Your City</h2>
+      
       <div className="row justify-content-center">
         {posts.length === 0 ? (
           <p className="text-center">No posts found in your city.</p>
@@ -43,10 +43,10 @@ const Post = () => {
                     />
                     <strong>{post.user?.username || 'Unknown'}</strong>
                   </div>
-
+                    <p className="card-text mt-3">{post.description}</p>
                   {/* Post Image */}
                   {post.image && (
-                    <div style={{ overflow: 'hidden', minHeight: '650px' }}>
+                    <div style={{ overflow: 'hidden'}}>
                       <img
                         src={post.image}
                         alt="Post"
@@ -60,8 +60,8 @@ const Post = () => {
                     </div>
                   )}
 
-                  {/* Post Description */}
-                  <p className="card-text mt-3">{post.description}</p>
+                  
+                  
                   <p className="text-muted small">City: {post.city}</p>
                 </div>
               </div>
