@@ -9,7 +9,7 @@ import React from 'react'
 import Friend from './Friend'
 import FriendSuggestion from './FriendSujjestion'
 // import FriendsList from './FriendsList'
-// import FriendRequests from './FriendRequests'
+import FriendRequests from './FriendRequests'
 import EditForm from './editForm'
 import './App.css'
 import Friends from './friends'
@@ -31,7 +31,7 @@ function App() {
           <Route index element={<FriendSuggestion />} />
           <Route path="friends/suggestions" element={<FriendSuggestion />} />
           <Route path="friends/friends" element={<Friends />} />
-          {/* <Route path="friends/requests" element={<FriendRequests />} /> */}
+          <Route path="friends/requests" element={<FriendRequests />} />
         </Route>
       </Routes>
     </Router>

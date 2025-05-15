@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-
+import friendRequest from '../models/friendRequest.js';
 
 
 
@@ -84,4 +84,14 @@ export const getSentRequests = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sent requests' });
   }
 };
-
+export const getPendingFriendRequests =async (req,res)=>{
+  try{
+     const userId = req.user.id;
+     const requests = await FriendRequest.find({to:userId,status:'pending'}).populate('from','username profileImage');
+     console.log(requests);
+     res.status(200).json({pendingRequests:requests});
+  }catch(error){
+      console.error('error fetching friend requests',error.message);
+      res.status(500).json({message:"server error"});
+  }
+}
