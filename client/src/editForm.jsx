@@ -10,7 +10,7 @@ const EditForm = () => {
     profileImage: "",
     about: "",
   });
-
+  const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -28,6 +28,7 @@ const EditForm = () => {
           profileImage: res.data.profileImage || "",
           about: res.data.about || "",
         });
+        
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -35,8 +36,17 @@ const EditForm = () => {
         setLoading(false);
       }
     };
-
+    const fetchCities = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/cities',{withCredentials:true});
+      setCities(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.error('Error fetching cities:', err);
+    }
+  };
     fetchUser();
+    fetchCities();
   }, []);
 
   const handleChange = (e) => {
@@ -147,9 +157,10 @@ const EditForm = () => {
             required
           >
             <option value="">Select your city</option>
-            {cityOptions.map((city) => (
-              <option key={city} value={city}>
-                {city}
+            {cities.map((city) => (
+                
+              <option key={city.city} value={city.city}>
+                {city.city}
               </option>
             ))}
           </select>

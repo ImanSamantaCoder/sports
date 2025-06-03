@@ -13,6 +13,7 @@ import FriendRequests from './FriendRequests'
 import EditForm from './editForm'
 import './App.css'
 import Friends from './friends'
+import AdminDashBoard from './AdminDashBoard'
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<EditForm />} />
-
+         <Route path="/AdminDashBoard" element={<AdminDashBoard />} />
         {/* Parent route with nested routes */}
         <Route path="/friends" element={<Friend />}>
           <Route index element={<FriendSuggestion />} />

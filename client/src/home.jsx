@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import cityOptions from './cityOptions';
-import Post from './Post'; // <-- Import Post.jsx
+import Post from './Post';
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,6 +11,23 @@ const Home = () => {
     image: null,
     city: '',
   });
+  const [user, setUser] = useState(null); // For user data including role
+  
+  useEffect(() => {
+    // Fetch user info
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/auth/user/me', {
+          withCredentials: true,
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error('Failed to fetch user:', error.response?.data || error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,18 +78,23 @@ const Home = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/home">Home</Link>
-              </li>
+              
+              {user?.role === 'admin' && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/AdminDashboard">Admin Dashboard</Link>
+                </li>
+              )}
+              {user?.role != 'admin' &&(
               <li className="nav-item">
                 <Link className="nav-link" to="/friends">Friends</Link>
-              </li>
+              </li>)}
               <li className="nav-item">
                 <Link className="nav-link" to="/profile">Profile</Link>
               </li>
-              <li className="nav-item">
+              {user?.role !='admin' &&( <li className="nav-item">
                 <Link className="nav-link create-post-link" to="#" onClick={() => setShowModal(true)}>Create Post</Link>
-              </li>
+              </li>)}
+             
             </ul>
           </div>
         </div>
@@ -118,9 +140,8 @@ const Home = () => {
       )}
       {showModal && <div className="modal-backdrop fade show"></div>}
 
-      {/* 🚀 Render posts from user's city */}
+      {/* Posts */}
       <div className="container mt-5">
-     
         <Post />
       </div>
     </>

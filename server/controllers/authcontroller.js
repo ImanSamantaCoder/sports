@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 });
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 export const sendOtp = async (req, res) => {
-    const { email, username, password, city } = req.body;
+    const { email, username, password, city,role } = req.body;
   
     try {
       const existing = await User.findOne({ email });
@@ -27,7 +27,7 @@ export const sendOtp = async (req, res) => {
   
       otpStore[email] = {
         otp,
-        data: { email, password: hashedPassword, username, city },
+        data: { email, password: hashedPassword, username, city,role },
         expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
       };
   
@@ -78,16 +78,20 @@ export const sendOtp = async (req, res) => {
   };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password,role} = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: 'User not found' });
-
+    console.log(role);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+    console.log("user role",user.role);
+    const isMatchRole =  user.role == role ? true :false;
+    console.log(isMatchRole);
+    if (!isMatchRole) return res.status(400).json({ msg: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, email: user.email,role:user.role }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
    console.log("inside login:",token);

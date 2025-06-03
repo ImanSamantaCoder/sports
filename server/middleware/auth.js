@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded token payload:', decoded);  // Important to confirm what's inside
+    console.log('Decoded token payload:', decoded);
     req.user = decoded;
     next();
   } catch (err) {
@@ -21,4 +21,14 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ msg: 'Token is not valid', error: err.message });
   }
 };
-export default verifyToken;
+
+const verifyAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  } else {
+    return res.status(403).json({ msg: 'Access denied - admin only' });
+  }
+};
+
+// Named export
+export { verifyToken, verifyAdmin };

@@ -6,6 +6,7 @@ const Login = () => {
   const navigate = useNavigate(); // 👈 create navigate instance
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async (event) => {
@@ -18,7 +19,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password,role }),
         credentials: 'include', // Make sure cookies are included with the request
       });
 
@@ -59,7 +60,27 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
+        <label htmlFor="role" className="form-label">
+            role
+          </label>
+          <select
+            className="form-select"
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+          >
+            <option value="">Select your role</option>
+            
+              <option key={1} value='admin'>
+                 admin
+              </option>
+                <option key={2} value='client'>
+                 client
+              </option>
+          </select>
+            <br></br>
         <button type="submit">Login</button>
 
         <div className="forgot-link">

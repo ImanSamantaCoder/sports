@@ -7,9 +7,12 @@ const userSchema = new mongoose.Schema({
   city: { type: String, required: true },
   profileImage: { type: String, default: '' },
   about: { type: String, default: '' },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  role: {
+    type: String,
+    enum: ['admin', 'client'],
+    default: 'admin'
+  }
 }, { timestamps: true });
-
-
 
 export default mongoose.model('User', userSchema);

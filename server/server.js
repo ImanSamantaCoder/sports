@@ -8,7 +8,7 @@ dotenv.config();
 import uploadRoute from './routes/upload.js';
 import post from "./routes/post.js"
 import friendRoutes from './routes/friendRoutes.js';
-
+import cityRoutes from "./routes/cityRoutes.js"
 const app = express();
 const PORT = process.env.PORT || 5000;
  // ✅ correct import for default
@@ -30,7 +30,7 @@ app.use('/api/upload', uploadRoute);
 app.use('/api/posts', postRoutes);
 app.use('/api/post', post);
 app.use('/api/friends', friendRoutes);
-
+app.use('/api/cities', cityRoutes);
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

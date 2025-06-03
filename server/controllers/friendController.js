@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import friendRequest from '../models/friendRequest.js';
+import FriendRequest from '../models/friendRequest.js';
 
 
 
@@ -36,7 +36,7 @@ export const suggestFriends = async (req, res) => {
     return res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };
-import FriendRequest from '../models/friendRequest.js';// if you want to check if users exist
+
 
 export const sendFriendRequest = async (req, res) => {
   try {
@@ -95,3 +95,62 @@ export const getPendingFriendRequests =async (req,res)=>{
       res.status(500).json({message:"server error"});
   }
 }
+
+
+// Accept friend request
+export const acceptFriendRequest = async (req, res) => {
+  try {
+    const fromUserId = req.params.id;       // Sender's ID (from)
+    const toUserId = req.user.id;           // Logged-in user (to)
+
+    // Find the friend request
+    const request = await FriendRequest.findOne({
+      from: fromUserId,
+      to: toUserId,
+      status: 'pending'
+    });
+
+    if (!request) {
+      return res.status(404).json({ msg: 'Friend request not found' });
+    }
+
+    // Update status to accepted
+    request.status = 'accepted';
+    await request.save();
+
+    return res.status(200).json({ msg: 'Friend request accepted' });
+  } catch (err) {
+    console.error('Error accepting friend request:', err.message);
+    return res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+export const getFriends = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find all accepted friend requests where user is either sender or receiver
+    const friends = await FriendRequest.find({
+      status: 'accepted',
+      $or: [
+        { from: userId },
+        { to: userId },
+      ]
+    })
+      .populate('from', 'username profileImage') // populate only useful fields
+      .populate('to', 'username profileImage');
+
+    // Transform to return actual friends (not self)
+    const friendList = friends.map((fr) => {
+      const isSender = fr.from._id.toString() === userId;
+      return isSender ? fr.to : fr.from;
+    });
+
+    res.status(200).json({ friends: friendList });
+  } catch (err) {
+    console.error('Error fetching friends:', err);
+    res.status(500).json({ msg: 'Failed to fetch friends', error: err.message });
+  }
+};
+
+

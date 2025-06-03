@@ -9,7 +9,7 @@ import {
   resetPassword,
   updateProfile
 } from '../controllers/authcontroller.js';
-import verifyToken from '../middleware/auth.js'; // ✅ correct import for default
+import {verifyToken,verifyAdmin} from '../middleware/auth.js'; // ✅ correct import for default
 
 import User from '../models/User.js';
 import dotenv from 'dotenv';

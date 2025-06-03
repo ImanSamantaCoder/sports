@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import verifyToken from '../middleware/auth.js'; // ✅ correct import for default
+import {verifyToken,verifyAdmin} from '../middleware/auth.js'; // ✅ correct import for default
 
 import cloudinary from '../config/cloudinary.js';
 import Post from '../models/Post.js';
